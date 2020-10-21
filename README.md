@@ -6,6 +6,8 @@ Capitalize Attributes does not attempt to work magic on mixed-case text. If some
 
 Capitalize Attributes works with ActiveRecord and ActiveModel models.
 
+This gem was inspired by the workhorse `strip_attributes` gem: https://github.com/rmm5t/strip_attributes
+
 ## Installation
 
 Add this line to your application's Gemfile:
