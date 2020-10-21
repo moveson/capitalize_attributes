@@ -1,8 +1,10 @@
-# CapitalizeAttributes
+# Capitalize Attributes
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/capitalize_attributes`. To experiment with that code, run `bin/console` for an interactive prompt.
+Capitalize Attributes is an ActiveModel extension that can automatically capitalize names and place-names that were entered as all-lowercase or all-uppercase text. This is often the case when a user is asked to provide personal information such as name, state, city, or country in an input form.
 
-TODO: Delete this and the text above, and describe your gem
+Capitalize Attributes does not attempt to work magic on mixed-case text. If someone goes to the trouble of using the shift key at some point during input, we assume they know what they are doing. This gem only affects values that are entirely uppercase or entirely lowercase.
+
+Capitalize Attributes works with ActiveRecord and ActiveModel models.
 
 ## Installation
 
@@ -22,7 +24,24 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+To use this gem, include the gem and then list the attributes that should be capitalized, like this:
+
+```ruby
+class MyModel < ::ApplicationRecord
+  include CapitalizeAttributes
+
+  capitalize_attributes :first_name, :last_name, :city
+end
+
+=> record = MyModel.new(first_name: "whisper", last_name: "SHOUT", city: "McCall")
+=> record.validate
+=> record.first_name
+#> "Whisper"
+=> record.last_name
+#> "Shout"
+=> record.city
+#> "McCall"
+```
 
 ## Development
 
