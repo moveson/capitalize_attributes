@@ -1,4 +1,5 @@
 require "active_model"
+require "capitalize_attributes/selective_capitalizer"
 
 module CapitalizeAttributes
   extend ::ActiveSupport::Concern
@@ -25,11 +26,9 @@ module CapitalizeAttributes
     capitalizable_attributes = attributes.slice(*self.capitalizable_attribute_names)
 
     capitalizable_attributes.each do |attr, value|
-      # Only capitalize the value if it is all lowercase or all uppercase.
-      # This avoids inadvertently capitalizing names intended to have mixed
-      # case, like "McDonald"
-      if value.present? && (value.downcase == value || value.upcase == value)
-        self.send("#{attr}=", value.titleize)
+      if value.present?
+        new_value = ::CapitalizeAttributes::SelectiveCapitalizer.perform(value)
+        self.send("#{attr}=", new_value) if new_value != value
       end
     end
 
