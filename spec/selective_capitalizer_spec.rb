@@ -3,7 +3,6 @@ require "capitalize_attributes/selective_capitalizer"
 
 RSpec.describe ::CapitalizeAttributes::SelectiveCapitalizer do
   describe ".perform" do
-
     examples = [
       { value: "hello", expected_result: "Hello" },
       { value: "HELLO", expected_result: "Hello" },
