@@ -37,13 +37,73 @@ end
 
 => record = MyModel.new(first_name: "whisper", last_name: "SHOUT", city: "McCall")
 => record.validate
+
 => record.first_name
 #> "Whisper"
+
 => record.last_name
 #> "Shout"
+
 => record.city
 #> "McCall"
 ```
+
+## Testing
+
+Capitalize Attributes comes with custom RSpec matchers. To make the matchers available in all your specs, 
+include the following in your `rails_helper` file:
+```ruby
+require "capitalize_attributes/matchers"
+
+RSpec.configure do |config|
+  config.include CapitalizeAttributes::Matchers
+end
+```
+
+Within your spec file, use the matchers like this:
+```ruby
+RSpec.describe MyModel do
+  it { is_expected.to capitalize_attribute(:first_name) }
+  it { is_expected.to capitalize_attribute(:last_name) }
+  it { is_expected.not_to capitalize_attribute(:password) }
+end
+```
+
+### Testing in conjunction with the `strip_attributes` gem
+
+The matchers provided with the `strip_attributes` gem are incompatible with this gem. To solve compatibility 
+problems, you can monkey-patch the matchers by placing the following inside your RSpec support folder:
+```ruby
+# spec/support/matchers/strip_attributes.rb
+
+# Monkey patch to get StripAttributes working with Titleizable module
+module StripAttributes
+  module Matchers
+    class StripAttributeMatcher
+      def matches?(subject)
+        @attributes.all? do |attribute|
+          @attribute = attribute
+          subject.send("#{@attribute}=", " string ")
+          subject.valid?
+          subject.send(@attribute).downcase == "string" and collapse_spaces?(subject)
+        end
+      end
+
+      private
+
+      def collapse_spaces?(subject)
+        return true if !@options[:collapse_spaces]
+
+        subject.send("#{@attribute}=", " string    string ")
+        subject.valid?
+        subject.send(@attribute).downcase == "string string"
+      end
+    end
+  end
+end
+```
+This patch works with `strip_attributes` version 1.11.0. The only changes from the code in that gem 
+are the additions of `.downcase` in lines 10 and 21.
 
 ## Development
 
