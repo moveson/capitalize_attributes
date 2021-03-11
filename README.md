@@ -76,7 +76,7 @@ problems, you can monkey-patch the matchers by placing the following inside your
 ```ruby
 # spec/support/matchers/strip_attributes.rb
 
-# Monkey patch to get StripAttributes working with Titleizable module
+# Monkey patch to get StripAttributes working with CapitalizeAttributes module
 module StripAttributes
   module Matchers
     class StripAttributeMatcher
